@@ -10,6 +10,14 @@ class User {
     private $group;
     private $email;
     
+    public function __construct($data) {
+        $this->set_id($data->id);
+        $this->set_username($data->käyttäjänimi);
+        $this->set_password($data->salasana);
+        $this->set_group($data->käyttäjäryhmä);
+        $this->set_email($data->email);
+    }
+    
     public static function find_user($username, $password) {
         $sql = "select id, email, käyttäjänimi, salasana, käyttäjäryhmä from käyttäjä where käyttäjänimi = ? and salasana = ? limit 1";
         $query = get_db_connection()->prepare($sql);
@@ -19,12 +27,7 @@ class User {
         if ($result == null) {
             return null;
         } else {
-            $user = new User();
-            $user->set_id($result->id);
-            $user->set_username($result->käyttäjänimi);
-            $user->set_password($result->salasana);
-            $user->set_group($result->käyttäjäryhmä);
-            $user->set_email($result->email);
+            $user = new User($result);
             return $user;
         }
     }

@@ -35,7 +35,7 @@
               <?php endif; ?>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-              <?php if ($_SESSION["current_user"] === null): ?>
+              <?php if (!isset($_SESSION["current_user"])): ?>
               <li <?php if ($page == "register"): ?>class="active"<?php endif; ?>><a href="register.php">Rekisteröidy</a></li>
               <?php else: ?>
               <li><a href="index.php?logout">Kirjaudu ulos</a></li>
