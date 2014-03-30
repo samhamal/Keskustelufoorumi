@@ -16,7 +16,7 @@ class User {
         $query->execute(array($username, $password));
         $result = $query->fetchObject();
         
-        if ($result === null) {
+        if ($result == null) {
             return null;
         } else {
             $user = new User();
