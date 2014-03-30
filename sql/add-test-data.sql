@@ -1,4 +1,6 @@
-insert into Käyttäjä(id, käyttäjänimi, käyttäjäryhmä, email, salasana) VALUES(0, 'testadmin', 'ylläpito', 'testmail@testi.domain', 'testi');
+insert into Käyttäjä(id, käyttäjänimi, käyttäjäryhmä, email, salasana) VALUES(0, 'admin', 'admin', 'admin@testi.domain', 'testi');
+
+insert into Käyttäjä(id, käyttäjänimi, käyttäjäryhmä, email, salasana) VALUES(1, 'testaaja', 'käyttäjä', 'testaaja@testi.domain', 'testi');
 
 insert into Aihealue(id, nimi, kuvaus) VALUES(10, 'Offtopic', 'Random höpinää');
 
