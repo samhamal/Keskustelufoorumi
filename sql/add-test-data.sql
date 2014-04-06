@@ -1,6 +1,6 @@
-insert into Käyttäjä(id, käyttäjänimi, käyttäjäryhmä, email, salasana) VALUES(0, 'admin', 'admin', 'admin@testi.domain', '$2y$10$9uL0l98S2OU2SnSs77A8J.UlX4ZLPnEJhN9P7ynggYzL0D5Xqke22');
+insert into Käyttäjä(id, käyttäjänimi, käyttäjäryhmä, email, salasana) VALUES(0, 'admin', 'admin', 'admin@testi.domain', '$2a$08$3wUOhx/sSZaDltKhPEm5NeTL4vJVmfm5On.x7qOyeaqCWDuZCNzbu');
 
-insert into Käyttäjä(id, käyttäjänimi, käyttäjäryhmä, email, salasana) VALUES(1, 'testaaja', 'käyttäjä', 'testaaja@testi.domain', '$2y$10$9uL0l98S2OU2SnSs77A8J.UlX4ZLPnEJhN9P7ynggYzL0D5Xqke22');
+insert into Käyttäjä(id, käyttäjänimi, käyttäjäryhmä, email, salasana) VALUES(1, 'testaaja', 'käyttäjä', 'testaaja@testi.domain', '$2a$08$3wUOhx/sSZaDltKhPEm5NeTL4vJVmfm5On.x7qOyeaqCWDuZCNzbu');
 
 insert into Aihealue(id, nimi, kuvaus) VALUES(10, 'Offtopic', 'Random höpinää');
 
