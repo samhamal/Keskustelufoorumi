@@ -1,17 +1,20 @@
 <!-- käyttäjätietojen vaihto näkyvissä vain käyttäjälle itselleen ja ylläpidolle-->
 <div class="navbar navbar-default">
+    <?php if (isset($data->error)): ?>
+        <div class="alert alert-danger"><?php echo $data->error; ?></div>
+    <?php endif; ?>
     <div class="list-group">
         <h4 class="list-group-heading"><a href="user.php?id=<?php echo $data->user->get_id(); ?>" class="navbar-link">Käyttäjä</a> &#0187; <a href="user.php?id=<?php echo $data->user->get_id(); ?>" class="navbar-link"><?php echo $data->user->get_username(); ?></a></h4>
     </div>
-    <form class="form-signin" role="form">
-        <input type="email" class="form-control form-item" value="<?php echo $data->user->get_email(); ?>">
-        <input type="password" class="form-control form-item" placeholder="salasana">
-        <input type="password" class="form-control form-end" placeholder="salasana uudestaan">
+    <form action="user.php" class="form-signin" role="form" method="post">
+        <input name="email" type="email" class="form-control form-item" value="<?php echo $data->user->get_email(); ?>">
+        <input name="password" type="password" class="form-control form-item" placeholder="salasanan vaihto">
+        <input name="password_confirm" type="password" class="form-control form-end" placeholder="salasana uudestaan">
         <button class="btn btn-lg btn-primary btn-block" type="submit">Tallenna</button>
     </form>
 </div>
-<div class="navbar navbar-default">
 
+<div class="navbar navbar-default">
     <div class="list-group">
         <h4 class="list-group-heading"><a href="user.php?id=<?php echo $data->user->get_id(); ?>" class="navbar-link">Käyttäjän viestiketjut</a> &#0187; <a href="user.php?id=<?php echo $data->user->get_id(); ?>" class="navbar-link"><?php echo $data->user->get_username(); ?></a></h4>
         <a href="viewtopic.php?id=3" class="list-group-item">

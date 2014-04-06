@@ -17,14 +17,17 @@
         view("index-login");
     } else {
         // käyttäjä on kirjautumassa
-        $user = User::find_user(filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING), filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING));
+        $user = User::find(filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING), 
+                           filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING));
         if($user != null) {
             // oikeat tunnukset annettu, näytetään listaus viimeisimmistä viesteistä
             $_SESSION["current_user"] = $user;
             view("index-listing");
         } else {
             // väärät tunnukset annettu
-            view("index-login", array("error" => "Väärä käyttäjätunnus tai salasana.", "username" => filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING)));
+            view("index-login", array(
+                                "error" => "Väärä käyttäjätunnus tai salasana.", 
+                                "username" => filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING)));
         }
     }
 
