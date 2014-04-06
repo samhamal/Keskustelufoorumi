@@ -1,6 +1,7 @@
 <?php
 
 require_once "libs/dbconn.php";
+require_once "libs/PasswordHash.php";
 
 class User {
     
@@ -51,7 +52,7 @@ class User {
                      "id" => -1, 
                      "käyttäjänimi" => $username, 
                      "email" => $email, 
-                     "salasana" => password_hash($password, PASSWORD_BCRYPT), 
+                     "salasana" => $password, 
                      "käyttäjäryhmä" => "käyttäjä");
         
         $user = new User((object)$user_info);
@@ -91,8 +92,10 @@ class User {
             return null;
         } else {
             $user = new User($result);
+            $hasher = new PasswordHash(8, false);
+            
             $user->set_password_hashed($result->salasana);
-            if (password_verify($password, $user->get_password())) {
+            if ($hasher->CheckPassword($password, $user->get_password())) {
                 return $user;
             } else {
                 return null;
@@ -121,7 +124,8 @@ class User {
     }
     
     public function set_password($password) {
-        $this->password = password_hash($password, PASSWORD_BCRYPT);
+        $hasher = new PasswordHash(8, false);
+        $this->password = $hasher->HashPassword($password);
     }
     
     public function get_password() {
