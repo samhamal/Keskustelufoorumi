@@ -91,6 +91,7 @@ class User {
             return null;
         } else {
             $user = new User($result);
+            $user->set_password_hashed($result->salasana);
             if (password_verify($password, $user->get_password())) {
                 return $user;
             } else {
@@ -113,6 +114,10 @@ class User {
     
     public function get_username() {
         return $this->username;
+    }
+    
+    public function set_password_hashed($password) {
+        $this->password = $password;
     }
     
     public function set_password($password) {
