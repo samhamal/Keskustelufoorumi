@@ -81,12 +81,35 @@ class User {
         }
     }
     
-    public static function find($username, $password) {
+    public static function find_one($username) {
+        $sql = "select id, email, käyttäjänimi, salasana, käyttäjäryhmä from käyttäjä where käyttäjänimi = ? limit 1";
+        $query = get_db_connection()->prepare($sql);
+        $query->execute(array($username));
+        return $query->fetchObject();        
+    }
+    
+    public static function find_many($username) {
+        $sql = "select id, email, käyttäjänimi, salasana, käyttäjäryhmä from käyttäjä where käyttäjänimi like ? order by käyttäjänimi";
+        $query = get_db_connection()->prepare($sql);
+        $query->execute(array($username));
+        $result = $query->fetchAll();
+        $users = array();
+        
+        foreach($result as $user_data) {
+            $users[] = (Object)(new User((Object)$user_data));
+        }
+        return $users;
+    }
+    
+    public static function login($username, $password) {
         //$sql = "select id, email, käyttäjänimi, salasana, käyttäjäryhmä from käyttäjä where käyttäjänimi = ? and salasana = ? limit 1";
+        /*
         $sql = "select id, email, käyttäjänimi, salasana, käyttäjäryhmä from käyttäjä where käyttäjänimi = ? limit 1";
         $query = get_db_connection()->prepare($sql);
         $query->execute(array($username));
         $result = $query->fetchObject();
+        */
+        $result = User::find_one($username);
         
         if ($result == null) {
             return null;

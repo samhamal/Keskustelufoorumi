@@ -26,7 +26,13 @@
               <li <?php if (in_array($page, array("index-login", "index-listing", "index-admin"))): ?>class="active"<?php endif; ?>><a href="index.php">Etusivu</a></li>
               <?php if(isset($_SESSION["current_user"])): ?>
               <li <?php if ($page == "forums"): ?>class="active"<?php endif; ?>><a href="forums.php">Aihealueet</a></li>
-              <li <?php if ($page == "find"): ?>class="active"<?php endif; ?>><a href="find.php">Etsi</a></li>
+              <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Etsi<b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="find.php?user">Käyttäjä</a></li>
+                    <li><a href="find.php?topic">Viestiketju</a></li>
+                  </ul>
+                </li>
               <li <?php if ($page == "user"): ?>class="active"<?php endif; ?>><a href="user.php">Asetukset</a></li>
 
               <?php $user = $_SESSION["current_user"]; if ($user->is_admin()): ?>

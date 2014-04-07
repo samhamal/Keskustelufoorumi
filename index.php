@@ -17,7 +17,7 @@
         view("index-login");
     } else {
         // käyttäjä on kirjautumassa
-        $user = User::find(filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING), 
+        $user = User::login(filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING), 
                            filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING));
         if($user != null) {
             // oikeat tunnukset annettu, näytetään listaus viimeisimmistä viesteistä
