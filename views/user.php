@@ -1,4 +1,9 @@
 <!-- käyttäjätietojen vaihto näkyvissä vain käyttäjälle itselleen ja ylläpidolle-->
+<?php if(!isset($data->user)) {
+    $data->user = $data->current_user;
+}?>
+<?php if ((isset($data->user) && $data->current_user->is_admin()) || ($data->user->get_id() == $data->current_user->get_id())): ?>
+
 <div class="navbar navbar-default">
     <?php if (isset($data->error)): ?>
         <div class="alert alert-danger"><?php echo $data->error; ?></div>
@@ -6,13 +11,18 @@
     <div class="list-group">
         <h4 class="list-group-heading"><a href="user.php?id=<?php echo $data->user->get_id(); ?>" class="navbar-link">Käyttäjä</a> &#0187; <a href="user.php?id=<?php echo $data->user->get_id(); ?>" class="navbar-link"><?php echo $data->user->get_username(); ?></a></h4>
     </div>
-    <form action="user.php" class="form-signin" role="form" method="post">
+    <?php if ($data->user->get_id() != $data->current_user->get_id()): ?>
+        <form action="user.php?id=<?php echo $data->user->get_id(); ?>" class="form-signin" role="form" method="post">
+    <?php else: ?>
+        <form action="user.php" class="form-signin" role="form" method="post">
+    <?php endif; ?>
         <input name="email" type="email" class="form-control form-item" value="<?php echo $data->user->get_email(); ?>">
         <input name="password" type="password" class="form-control form-item" placeholder="salasanan vaihto">
         <input name="password_confirm" type="password" class="form-control form-end" placeholder="salasana uudestaan">
         <button class="btn btn-lg btn-primary btn-block" type="submit">Tallenna</button>
     </form>
 </div>
+<?php endif; ?>
 
 <div class="navbar navbar-default">
     <div class="list-group">
