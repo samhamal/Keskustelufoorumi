@@ -10,7 +10,7 @@
     }
     
     if (isset($_SESSION["current_user"])) {
-    // käyttäjä kirjautunut joskus aikasemmin. hae viimesimmät lukemattomat viestit ja näytä listaus
+        // käyttäjä kirjautunut joskus aikasemmin. hae viimesimmät lukemattomat viestit ja näytä listaus
         view("index-listing");
     } else if (empty($_POST["username"]) || empty($_POST["password"])) {
         // käyttäjä ei ole kirjautunut äskettäin tai aikasemmin

@@ -21,11 +21,7 @@ class User {
     }
     
     public function is_proper_user() {
-        if ($this->validate_email() && $this->validate_username() && $this->validate_password()) {
-            return true;
-        } else {
-            return false;
-        }
+        return ($this->validate_email() && $this->validate_username() && $this->validate_password());
     }
     
     // stub
@@ -33,13 +29,8 @@ class User {
         return true;
     }
     
-    // stub
     public function validate_username() {
-        if(strlen($this->username) < 20) {
-            return true;
-        } else {
-            return false;
-        }
+        return (strlen($this->username) < 20);
     }
     
     // stub
@@ -56,12 +47,13 @@ class User {
                      "käyttäjäryhmä" => "käyttäjä");
         
         $user = new User((object)$user_info);
+        
         if ($user->is_proper_user()) {
             $user->save();
+            return $user;
         } else {
             return null;
         }
-        return $user;
     }
 
     public function save() {
@@ -77,15 +69,15 @@ class User {
             [Wed Apr  9 17:24:18 2014] 127.0.0.1:58420 [500]: /register.php - Uncaught exception 'PDOException' with message 'SQLSTATE[23505]: Unique violation: 7 ERROR:  duplicate key value violates unique constraint "käyttäjä_pkey"
              */
             
-            // Yritetään suorittaa kysely pari kertaa. 
-            // testauksessa tuo pgsqln ongelma on korjaantunut suorittamalla kysely uudestaan
+            // Yritetään suorittaa käyttäjän tallennus pari kertaa.
+            // Omalla koneella testatessa tuo pgsqln ongelma on korjaantunut suorittamalla kysely uudestaan.
             try {
                 $result = $query->execute(array($this->get_username(), $this->get_group(), $this->get_email(), $this->get_password()));
             } catch(PDOException $Exception) {
                 try {
                     $result = $query->execute(array($this->get_username(), $this->get_group(), $this->get_email(), $this->get_password()));
                 } catch(PDOException $Exception) {
-                    
+                    die("PDOException: käyttäjän tallentaminen tietokantaan ei onnistunut.");
                 }
             }
             
@@ -212,6 +204,6 @@ class User {
     }
     
     public function is_admin() {
-        return $this->group === "admin";
+        return $this->group == "admin";
     }
 }
