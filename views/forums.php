@@ -1,17 +1,13 @@
+    <?php if (isset($data->error)): ?>
+        <div class="alert alert-danger"><?php echo $data->error; ?></div>
+    <?php endif; ?>
 <div class="navbar navbar-default">
-
     <div class="list-group">
-        <a href="viewforum.php?id=1" class="list-group-item">
-            <h4 class="list-group-item-heading">Yleinen keskustelu</h4>
-            <p class="list-group-item-text">Aihealueen kuvaus tähän</p>
+        <?php foreach($data->forums as $one_forum): ?>
+        <a href="viewforum.php?id=<?php echo $one_forum->get_id(); ?>" class="list-group-item">
+            <h4 class="list-group-item-heading"><?php echo $one_forum->get_name(); ?></h4>
+            <p class="list-group-item-text"><?php echo $one_forum->get_description(); ?></p>
         </a>
-        <a href="viewforum.php?id=2" class="list-group-item">
-            <h4 class="list-group-item-heading">Random</h4>
-            <p class="list-group-item-text">Aihealueen kuvaus tähän</p>
-        </a>
-        <a href="viewforum.php?id=3" class="list-group-item">
-            <h4 class="list-group-item-heading">Kolmas keskustelualue</h4>
-            <p class="list-group-item-text">Aihealueen kuvaus tähän</p>
-        </a>
+        <?php endforeach; ?>
     </div>
 </div>

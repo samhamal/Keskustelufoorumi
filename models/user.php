@@ -61,25 +61,7 @@ class User {
         if ($this->id == -1) {
             $sql = "insert into Käyttäjä(käyttäjänimi, käyttäjäryhmä, email, salasana) VALUES(?, ?, ?, ?) returning id";
             $query = get_db_connection()->prepare($sql);
-            
-            /* 
-            todo: PDOException catch ja tallennuksen uudelleenyritys
-            [Wed Apr  9 17:24:18 2014] PHP Fatal error:  Uncaught exception 'PDOException' with message 'SQLSTATE[23505]: Unique violation: 7 ERROR:  duplicate key value violates unique constraint "käyttäjä_pkey"
-            DETAIL:  Key (id)=(1) already exists.' in /home/aeroff/NetBeansProjects/tsoha/Keskustelufoorumi/models/user.php:72
-            [Wed Apr  9 17:24:18 2014] 127.0.0.1:58420 [500]: /register.php - Uncaught exception 'PDOException' with message 'SQLSTATE[23505]: Unique violation: 7 ERROR:  duplicate key value violates unique constraint "käyttäjä_pkey"
-             */
-            
-            // Yritetään suorittaa käyttäjän tallennus pari kertaa.
-            // Omalla koneella testatessa tuo pgsqln ongelma on korjaantunut suorittamalla kysely uudestaan.
-            try {
-                $result = $query->execute(array($this->get_username(), $this->get_group(), $this->get_email(), $this->get_password()));
-            } catch(PDOException $Exception) {
-                try {
-                    $result = $query->execute(array($this->get_username(), $this->get_group(), $this->get_email(), $this->get_password()));
-                } catch(PDOException $Exception) {
-                    die("PDOException: käyttäjän tallentaminen tietokantaan ei onnistunut.");
-                }
-            }
+            $result = $query->execute(array($this->get_username(), $this->get_group(), $this->get_email(), $this->get_password()));
             
             if ($result) {
                 $this->id = $query->fetchColumn();
@@ -99,16 +81,22 @@ class User {
     }
     
     public static function find_by_id($id) {
-        $sql = "select id, email, käyttäjänimi, salasana, käyttäjäryhmä from käyttäjä where id = ? limit 1";
-        $query = get_db_connection()->prepare($sql);
-        $query->execute(array($id));
-        $result = $query->fetchObject();
-        
-        if ($result == null) {
-            return null;
+        if($id != -1) {
+            $sql = "select id, email, käyttäjänimi, salasana, käyttäjäryhmä from käyttäjä where id = ? limit 1";
+            $query = get_db_connection()->prepare($sql);
+            $query->execute(array($id));
+            $result = $query->fetchObject();
+
+            if ($result == null) {
+                return null;
+            } else {
+                $user = new User($result);
+                return $user;        
+            }
         } else {
-            $user = new User($result);
-            return $user;        
+            // todo: testaa
+            // dummy käyttäjä joka näytetään poistetun käyttäjän viestien yhteydessä
+            $user = new User(array("id" => -1, "email" => null, "käyttäjänimi" => "[poistettu]", "salasana" => null, "käyttäjäryhmä" => null));
         }
     }
     
@@ -121,6 +109,7 @@ class User {
     public function delete() {
         User::delete_by_id($this->id);
     }
+    
     public static function find_many($username) {
         $sql = "select id, email, käyttäjänimi, salasana, käyttäjäryhmä from käyttäjä where käyttäjänimi like ? order by käyttäjänimi";
         $query = get_db_connection()->prepare($sql);

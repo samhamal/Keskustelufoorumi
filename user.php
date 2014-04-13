@@ -15,6 +15,8 @@
         $current_user = $_SESSION["current_user"];
         if ($current_user->is_admin()) {
             
+            
+            // todo: käy läpi viestit ja tyhjennä niiden sisältö
             if (isset($_GET["remove"])) {
                 $target_user = get_by_id();
                 if($target_user->is_admin()) {

@@ -1,4 +1,4 @@
-drop table luettuviesti;
-drop table viesti;
-drop table aihealue;
-drop table käyttäjä;
+drop table luettuviesti cascade;
+drop table viesti cascade;
+drop table aihealue cascade;
+drop table käyttäjä cascade;

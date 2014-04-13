@@ -1,10 +1,12 @@
 <?php 
-    require "libs/common.php";
-    require "models/user.php";
+    require_once "libs/common.php";
+    require_once "models/user.php";
+    require_once "models/forum.php";
     session_start();
     
     if(isset($_SESSION["current_user"])) {
-        view("forums");
+        $forums = Forum::get_all();
+        view("forums", array("forums" => $forums));
     } else {
         header("Location: index.php");
     } 

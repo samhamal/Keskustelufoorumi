@@ -4,7 +4,7 @@
     <form action="find.php" class="form-signin" role="form" method="post">
         <h3>Etsi käyttäjä</h3>
         <input name="user_username" type="text" class="form-control form-start" placeholder="käyttäjän nimi">
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Hae</button>
+        <button class="btn btn-lg btn-block" type="submit">Hae</button>
     </form>
     <?php endif; ?>
     <?php if(isset($data->find_topic)): ?>
@@ -15,7 +15,7 @@
         <input type="topic_before" class="form-control form-item" placeholder="viestiketju luotu ennen ..">
         <input type="topic_after" class="form-control form-item" placeholder="viestiketju luotu jälkeen ..">
         <input type="topic_forum" class="form-control form-end" placeholder="aihealue">
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Hae</button>
+        <button class="btn btn-lg btn-block" type="submit">Hae</button>
     </form>
     <?php endif; ?>
 </div>
@@ -44,10 +44,10 @@
               <td>Viestiketjun aloittaja</td>
               <td>Aihealue</td>
           </tr>
-          <?php foreach($data->users as $one_user): ?>
+          <?php foreach($data->topics as $topic): ?>
           <tr>
-              <td><a class="navbar-link" href="user.php?id=<?php echo $one_user->get_id(); ?>"><?php echo $one_user->get_id(); ?></a></td>
-          <td><a class="navbar-link" href="user.php?id=<?php echo $one_user->get_id(); ?>"><?php echo $one_user->get_username(); ?></a></td>
+              <td><a class="navbar-link" href="user.php?id=<?php echo $topic->get_owner()->get_id(); ?>"><?php echo $topic->get_id(); ?></a></td>
+          <td><a class="navbar-link" href="user.php?id=<?php echo $topic->get_owner()->get_id(); ?>"><?php echo $topic->get_username(); ?></a></td>
           </tr>
           <?php endforeach; ?>
       </table>

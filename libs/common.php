@@ -4,3 +4,6 @@
         require 'views/template.php';
         exit();
     }
+    
+    date_default_timezone_set("Europe/Helsinki");
+    

@@ -10,6 +10,6 @@
         <?php else: echo '<input name="username" type="text" class="form-control form-start" placeholder="käyttäjänimi" required autofocus>';
         endif; ?>
         <input name="password" type="password" class="form-control form-end" placeholder="salasana" required>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Kirjaudu</button>
+        <button class="btn btn-lg btn-block" type="submit">Kirjaudu</button>
     </form>
 </div>

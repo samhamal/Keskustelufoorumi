@@ -15,7 +15,7 @@
         endif; ?>
         <input name="password" type="password" class="form-control form-item" placeholder="salasana" required>
         <input name="password_confirm" type="password" class="form-control form-end" placeholder="salasana uudestaan" required>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Rekisteröidy</button>
+        <button class="btn btn-lg btn-block" type="submit">Rekisteröidy</button>
     </form>
 </div>
 
