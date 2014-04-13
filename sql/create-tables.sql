@@ -25,19 +25,20 @@ create table LuettuViesti(
   viesti integer references Viesti(id),
   käyttäjä integer references Käyttäjä(id));
 
+create language plpgsql;
 create or replace function hae_viestiketju(viesti_id integer, self boolean)
   returns setof Viesti as
 $body$
-declare viesti viesti%rowtype;
+declare viesti_r viesti%rowtype;
 
 begin
   if self then
     return query select * from viesti where id = viesti_id;
   end if;
-  for viesti in select * from viesti where liitos_id = viesti_id
+  for viesti_r in select * from viesti where liitos_id = viesti_id
     loop
-      return next viesti;
-      return query select * from hae_viestiketju(viesti.id, false);
+      return next viesti_r;
+      return query select * from hae_viestiketju(viesti_r.id, false);
     end loop;
   return;
 end
