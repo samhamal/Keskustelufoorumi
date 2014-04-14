@@ -13,6 +13,10 @@ body {
     margin-right: -1px;
 }
 
+.navbar-link:hover {
+    text-decoration: none;
+}
+
 .jumbotron {
     background-color: #fff;
 }
@@ -90,36 +94,3 @@ body {
 .table {
     margin-bottom: 0px;
 }
-/*
-.form-signin input[placeholder="käyttäjänimi"] {
-  margin-bottom: -1px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-}
-.form-signin input[placeholder="salasana"] {
-  margin-bottom: 10px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-}
-.form-signin input[placeholder="viestiketjun nimi"] {
-  margin-bottom: -1px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-.form-signin input[placeholder="luontiaika"] {
-  margin-bottom: 10px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-}
-
-.form-signin input[placeholder="email"] {
-  margin-bottom: -1px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-}
-*/

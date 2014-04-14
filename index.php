@@ -1,6 +1,7 @@
 <?php
     require "libs/common.php";
     require "models/user.php";
+    require "models/message.php";
     session_start();
     
     // kirjaudu ulos
@@ -11,7 +12,8 @@
     
     if (isset($_SESSION["current_user"])) {
         // käyttäjä kirjautunut joskus aikasemmin. hae viimesimmät lukemattomat viestit ja näytä listaus
-        view("index-listing");
+        $topics = Message::get_latest_topics(5);
+        view("index-listing", array("topics" => $topics));
     } else if (empty($_POST["username"]) || empty($_POST["password"])) {
         // käyttäjä ei ole kirjautunut äskettäin tai aikasemmin
         view("index-login");

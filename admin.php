@@ -1,17 +1,15 @@
 <?php 
     require "libs/common.php";
     require "models/user.php";
-    session_start();
+    require "models/forum.php";
     
-    // todo: hae tietty keskustelualue
-    if(isset($_GET["id"])) {
-        
-    }
+    session_start();
     
     if(isset($_SESSION["current_user"])) {
         $user = $_SESSION["current_user"];
         if($user->is_admin()) {
-            view("admin");
+            $forums = Forum::get_all();
+            view("admin", array("forums" => $forums));
         } else {
             header("Location: index.php");
         }

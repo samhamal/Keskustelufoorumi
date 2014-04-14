@@ -32,6 +32,26 @@ class Message {
             $sql = "insert into Viesti(sisältö, liitos_id, lähettäjä, lähetysaika, aihealue) VALUES(?, ?, ?, ?, ?) returning id";
             $query = get_db_connection()->prepare($sql);
             $query->execute(array($message_body, $parent->get_id(), $owner_id, date("Y-m-d H:i:s"), $forum));
+        } else {
+            $topic_info = array(
+                     "id" => -1, 
+                     "otsikko" => $title, 
+                     "sisältö" => $message_body, 
+                     "liitos_id" => null, 
+                     "lähettäjä" => $owner_id,
+                     "lähetysaika" => date("Y-m-d H:i:s"),
+                     "aihealue" => $forum);
+        
+            $topic = new Message((object)$topic_info);
+            
+            $sql = "insert into Viesti(otsikko, sisältö, liitos_id, lähettäjä, lähetysaika, aihealue) VALUES(?, ?, ?, ?, ?, ?) returning id";
+            $query = get_db_connection()->prepare($sql);
+            $result = $query->execute(array($title, $message_body, null, $owner_id, date("Y-m-d H:i:s"), $forum));
+            
+            if ($result) {
+                $topic->set_id($query->fetchColumn());
+                return $topic;
+            }
         }
     }
     
@@ -107,6 +127,27 @@ class Message {
         return $messages;       
     }
     
+    public static function get_topics_with_unread_posts($user) {
+        $sql = "select * from luettuviesti where käyttäjä = ?";
+        $query = get_db_connection()->prepare($sql);
+        $query->execute();
+        $readMessages = $query->fetchAll();
+    }
+    
+    public static function get_latest_topics($count) {
+        $sql = "select * from viesti where liitos_id is null order by id desc limit ?";
+        $query = get_db_connection()->prepare($sql);
+        $query->execute(array($count));
+        $result = $query->fetchAll();
+        $topics = array();
+        
+        foreach($result as $topic_data) {
+            $topics[] = new Message((object)$topic_data);
+        }
+        
+        return $topics;
+    }
+    
     // Hae kaikki viestiketjujen aloitukset tietyltä foorumilta
     public static function get_topics_by_forum_id($id) {
         $sql = "select * from viesti where liitos_id is null and aihealue = ? order by id";
@@ -116,7 +157,7 @@ class Message {
         $topics = array();
         
         foreach($result as $topic_data) {
-            $topics[] = (new Message((Object)$topic_data));
+            $topics[] = new Message((object)$topic_data);
         }
         return $topics;
     }
@@ -140,7 +181,7 @@ class Message {
     }
     
     public function set_id($id) {
-        
+        $this->id = $id;
     }
     
     public function get_title() {

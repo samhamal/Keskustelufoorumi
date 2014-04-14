@@ -1,5 +1,6 @@
 <div class="navbar navbar-default">
     <div class="list-group">
+        <a class="navbar-link navbar-right" style="margin-right: 15px;" href="message_new.php">Uusi viestiketju</a>
         <h4 class="list-group-heading"><?php echo $data->forum->get_name(); ?></h4>
         <?php foreach($data->topics as $topic): ?>
         <?php if(!$topic->is_hidden()): ?>
