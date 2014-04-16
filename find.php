@@ -18,7 +18,7 @@
             }
             view("find", array("find_user" => true, "users" => $user_array));
         } else if (isset($_POST["topic_username"])) {
-            $user = User::find_one(filter_input(INPUT_POST, "topic_username", FILTER_SANITIZE_STRING));
+            $user = User::find_by_username(filter_input(INPUT_POST, "topic_username", FILTER_SANITIZE_STRING));
             $topics = Message::get_by_user_id($user->get_id());
             view("find", array("find_topic" => true, "topics" => $topics));
         }

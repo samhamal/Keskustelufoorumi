@@ -4,6 +4,9 @@ require_once "libs/common.php";
 require_once "libs/dbconn.php";
 require_once "models/user.php";
 
+/**
+ * Viestin sisältävä luokka
+ */
 class Message {
     private $id;
     private $parent;
@@ -15,6 +18,10 @@ class Message {
     private $sent;
     private $hidden;
 
+    /**
+     * Luo uuden Message olion annetuilla parametreilla
+     * @param arrayobject $data luotavan viestin tiedot
+     */
     public function __construct($data) {
         $this->id = $data->id;
         $this->parent = $data->liitos_id;
@@ -27,11 +34,26 @@ class Message {
         $this->children = array();
     }
     
+    /**
+     * Syöttää vastauksen tietokantaan
+     * @param array $params
+     */
+    public static function create_reply($params) {
+        sql_query("insert into Viesti(sisältö, liitos_id, lähettäjä, lähetysaika, aihealue) VALUES(?, ?, ?, ?, ?) returning id", null, $params);
+    }
+    
+    /**
+     * Luo uusi vastausviesti tai viestiketju annetuilla parametreilla
+     * @param type $message_body viestin sisältö
+     * @param type $parent toisen viestin id, jos luotava viesti on vastaus johonkin toiseen
+     * @param type $forum aihealue
+     * @param type $owner_id viestin lähettäneen käyttäjän id
+     * @param type $title viestin otsikko, jos viesti on viestiketjun aloitus
+     * @return Palauttaa Message olion vain uutta viestiketjua tehtäessä
+     */
     public static function create($message_body, $parent, $forum, $owner_id, $title = null) {
         if($title == null) {
-            $sql = "insert into Viesti(sisältö, liitos_id, lähettäjä, lähetysaika, aihealue) VALUES(?, ?, ?, ?, ?) returning id";
-            $query = get_db_connection()->prepare($sql);
-            $query->execute(array($message_body, $parent->get_id(), $owner_id, date("Y-m-d H:i:s"), $forum));
+            User::create_reply(array($message_body, $parent->get_id(), $owner_id, date("Y-m-d H:i:s"), $forum));
         } else {
             $topic_info = array(
                      "id" => -1, 
@@ -43,46 +65,45 @@ class Message {
                      "aihealue" => $forum);
         
             $topic = new Message((object)$topic_info);
-            
+            $params = array($title, $message_body, null, $owner_id, date("Y-m-d H:i:s"), $forum);
             $sql = "insert into Viesti(otsikko, sisältö, liitos_id, lähettäjä, lähetysaika, aihealue) VALUES(?, ?, ?, ?, ?, ?) returning id";
-            $query = get_db_connection()->prepare($sql);
-            $result = $query->execute(array($title, $message_body, null, $owner_id, date("Y-m-d H:i:s"), $forum));
+            $result = sql_query($sql, "column", $params);
             
             if ($result) {
-                $topic->set_id($query->fetchColumn());
+                $topic->set_id($result);
                 return $topic;
             }
         }
     }
     
+    /**
+     * Poista viesti
+     */
     public function remove() {
-        $sql = "select id from viesti where liitos_id = ?";
-        $query = get_db_connection()->prepare($sql);
-        $query->execute(array($this->id));
-        $result = $query->fetchAll();
+        $result = sql_query("select id from viesti where liitos_id = ?", "all", array($this->get_id()));
         
         if($result) {
             $this->hide();
         } else {
-            $sql = "delete from viesti where id = ?";
-            $query = get_db_connection()->prepare($sql);
-            $query->execute(array($this->id));
+            sql_query("delete from viesti where id = ?", null, array($this->get_id()));
         }
     }
     
+    /**
+     * Piilota viesti
+     */
     public function hide() {
-        $sql = "update viesti set piilotettu = true where id = ?";
-        $query = get_db_connection()->prepare($sql);
-        $query->execute(array($this->id));
+        sql_query("update viesti set piilotettu = true where id = ?", null, array($this->id()));
     }
     
-    // todo: Hae tietyn käyttäjän kaikki viestit
+    /**
+     * Hakee tietyn käyttäjän kaikki viestit idn perusteella
+     * @param int $id käyttäjän id
+     * @return palauttaa oliotaulukon käyttäjän lähettämistä viesteistä
+     */
     public static function get_by_user_id($id) {
         $messages = array();
-        $sql = "select * from viesti where lähettäjä = ? order by id";
-        $query = get_db_connection()->prepare($sql);
-        $query->execute(array($id));
-        $result = $query->fetchAll();
+        sql_query("select * from viesti where lähettäjä = ? order by id", "all", array($id));
         
         foreach($result as $message_data) {
             $messages[] = new Message((object)$message_data);
@@ -91,7 +112,11 @@ class Message {
         return $messages;
     }
     
-    // hae yksittäinen viesti
+    /**
+     * Hae yksittäinen viesti idn perusteella
+     * @param int $id viestin id
+     * @return Palauttaa Message olion jos viesti löytyi, null jos ei
+     */
     public static function get_by_id($id) {
         $sql = "select * from viesti where id = ? limit 1";
         $query = get_db_connection()->prepare($sql);
@@ -105,13 +130,14 @@ class Message {
         }
     }
     
-    // Hae koko viestiketju sen aloitusviestin idn perusteella
+    /**
+     * Hakee yhden viestiketjun kaikki viestit aloitusviestin idn perusteella
+     * @param int $id aloitusviestin id
+     * @return Oliotaulukko viestiketjun viesteistä
+     */
     public static function get_messages_by_topic($id) {
         $messages = array();
-        $sql = "select * from hae_viestiketju(?, true) order by id";
-        $query = get_db_connection()->prepare($sql);
-        $query->execute(array($id));
-        $result = $query->fetchAll();
+        $result = sql_query("select * from hae_viestiketju(?, true) order by id", "all", array($id));
         
         foreach($result as $message_data) {
             $messages[] = new Message((object)$message_data);
@@ -127,18 +153,24 @@ class Message {
         return $messages;       
     }
     
-    public static function get_topics_with_unread_posts($user) {
+    /**
+     * TODO: Hae kaikki viestit joita tietty käyttäjä ei ole vielä lukenut
+     * @param int $user käyttäjän id
+     */
+    public static function get_topics_with_unread_posts($user_id) {
         $sql = "select * from luettuviesti where käyttäjä = ?";
         $query = get_db_connection()->prepare($sql);
         $query->execute();
         $readMessages = $query->fetchAll();
     }
     
+    /**
+     * Hae viimeisimmät viestiketjut
+     * @param int $count haettavien viestiketjujen määrä
+     * @return Palauttaa oliotaulukon viesteistä järjestettynä idn mukaan
+     */
     public static function get_latest_topics($count) {
-        $sql = "select * from viesti where liitos_id is null order by id desc limit ?";
-        $query = get_db_connection()->prepare($sql);
-        $query->execute(array($count));
-        $result = $query->fetchAll();
+        $result = sql_query("select * from viesti where liitos_id is null order by id desc limit ?", "all", array($count));
         $topics = array();
         
         foreach($result as $topic_data) {
@@ -148,12 +180,13 @@ class Message {
         return $topics;
     }
     
-    // Hae kaikki viestiketjujen aloitukset tietyltä foorumilta
+    /**
+     * Hae kaikki viestiketjut tietyltä aihealueelta idn perusteella
+     * @param int $id aihealueen id
+     * @return Palauttaa oliotaulukon viesteistä
+     */
     public static function get_topics_by_forum_id($id) {
-        $sql = "select * from viesti where liitos_id is null and aihealue = ? order by id";
-        $query = get_db_connection()->prepare($sql);
-        $query->execute(array($id));
-        $result = $query->fetchAll();
+        $result = sql_query("select * from viesti where liitos_id is null and aihealue = ? order by id", "all", array($id));
         $topics = array();
         
         foreach($result as $topic_data) {
@@ -162,56 +195,104 @@ class Message {
         return $topics;
     }
     
+    /**
+     * Hae viesti johon tämä viesti on vastaus
+     * @return viestin id
+     */
     public function get_parent() {
         return $this->parent;
     }
     
+    /**
+     * Tallentaa viestiin tehdyt muokkaukset tietokantaan
+     */
     public function save() {
-        $sql = "update viesti set sisältö = ? where id = ?";
-        $query = get_db_connection()->prepare($sql);
-        $result = $query->execute(array($this->get_body(), $this->get_id()));
+        sql_query("update viesti set sisältö = ? where id = ?", null, array($this->get_body(), $this->get_id()));
     }
     
+    /**
+     * Aseta viestin sisältö
+     * @param string $message sisältö
+     */
     public function set_body($message) {
         $this->body = $message;
     }
     
+    /**
+     * Hae viestin id
+     * @return int id
+     */
     public function get_id() {
         return $this->id;
     }
     
+    /**
+     * Aseta viestin id 
+     * @param int $id viestin id
+     */
     public function set_id($id) {
         $this->id = $id;
     }
     
+    /**
+     * Hae viestin otsikko
+     * @return string otsikko
+     */
     public function get_title() {
         return htmlspecialchars($this->title);
     }
     
+    /**
+     * Hae viestin aihealue
+     * @return int aihealueen id
+     */
     public function get_forum() {
         return $this->forum;
     }
     
+    /**
+     * Hae viestin lähettäjä
+     * @return User käyttäjäolio
+     */
     public function get_owner() {
         return $this->owner;
     }
     
+    /**
+     * Hae viestin sisältö
+     * @return string sisältö
+     */
     public function get_body() {
         return htmlspecialchars($this->body);
     }
     
+    /**
+     * Hae viestin lähetysaika
+     * @return Date lähetysaika
+     */
     public function get_sent() {
         return $this->sent;
     }
     
+    /*
+     * Lisää viestille vastaus
+     */
     public function add_child($message) {
         $this->children[] = $message->get_id();
     }
     
+    /**
+     * Hae viestiin lähetetyt vastaukset
+     * @return array viestien id taulukko
+     */
     public function get_children() {
         return $this->children;
     }
     
+    /**
+     * Onko viesti piilotettu
+     * @return boolean true jos on, false jos ei
+     */
     public function is_hidden() {
         return $this->hidden;
     }

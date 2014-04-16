@@ -24,7 +24,8 @@
         if($user != null) {
             // oikeat tunnukset annettu, näytetään listaus viimeisimmistä viesteistä
             $_SESSION["current_user"] = $user;
-            view("index-listing");
+            $topics = Message::get_latest_topics(5);
+            view("index-listing", array("topics" => $topics));
         } else {
             // väärät tunnukset annettu
             view("index-login", array(
