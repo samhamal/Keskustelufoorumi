@@ -8,7 +8,6 @@
         <div class="list-group-item">
             <?php if(!$data->topic->is_hidden()): ?>
             <p><?php echo $data->topic->get_sent(); ?> - - <a href="user.php?id=<?php echo $data->topic->get_owner()->get_id(); ?>" class="navbar-link"><?php echo $data->topic->get_owner()->get_username(); ?></a><br/>
-                <a href="#reply" class="navbar-link">vastaa</a>
                 <?php if($data->current_user->is_admin() || $data->current_user->get_id() == $data->topic->get_owner()->get_id()): ?>
                 <a href="message_edit.php?topic=<?php echo $data->topic->get_id(); ?>&amp;edit=<?php echo $data->topic->get_id(); ?>" class="navbar-link">muokkaa</a>
                 <?php endif; ?>
@@ -27,7 +26,6 @@
             </a>
             <div class="list-group-item">
                 <p><?php if(!$reply->is_hidden()): ?><?php echo $reply->get_sent(); ?> - - <a href="user.php?id=<?php echo $reply->get_owner()->get_id(); ?>" class="navbar-link"><?php echo $reply->get_owner()->get_username(); ?></a><br/>
-                    <a href="#reply" class="navbar-link">vastaa</a>
                     <?php if($data->current_user->is_admin() || $data->current_user->get_id() == $reply->get_owner()->get_id()): ?>
                         <a href="message_edit.php?topic=<?php echo $data->topic->get_id(); ?>&amp;edit=<?php echo $reply->get_id(); ?>" class="navbar-link">muokkaa</a>
                     <?php endif; ?>

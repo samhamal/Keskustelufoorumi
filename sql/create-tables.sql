@@ -18,12 +18,13 @@ create table Viesti(
   lähetysaika timestamp,
   piilotettu boolean,
   liitos_id integer references Viesti(id), 
-  aihealue integer references Aihealue(id));
+  aihealue integer references Aihealue(id) on update cascade);
 
 create table LuettuViesti(
   id serial primary key,
   viesti integer references Viesti(id),
-  käyttäjä integer references Käyttäjä(id));
+  käyttäjä integer references Käyttäjä(id),
+  constraint uniikki_pari unique (viesti, käyttäjä));
 
 create language plpgsql;
 create or replace function hae_viestiketju(viesti_id integer, self boolean)

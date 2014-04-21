@@ -12,6 +12,8 @@
             $topic = $messages[0];
             $forum = Forum::get_by_id($topic->get_forum());
             $replies = array_splice($messages, 1); // poista viestiketjun aloitus viestilistasta
+            $user = $_SESSION["current_user"];
+            add_read($user->get_id(), $topic->get_id());
             view("viewtopic", array("forum" => $forum, "topic" => $topic, "replies" => $replies, "current_user" => $_SESSION["current_user"]));
             
         } else {

@@ -67,10 +67,11 @@ class Forum {
     }
     
     /**
-     * Päivittää Forum olion tietokantaan.
+     * Päivittää Forum olion ja tällä aihealueella olevat viestit tietokantaan
+     * @param int $old_id aihealueen vanha id
      */
-    public function update() {
-        sql_query("update aihealue set id = ?, nimi = ?, kuvaus = ? where id = ?", null, array($this->id, $this->name, $this->description, $this->id));
+    public function update($old_id) {
+        sql_query("update aihealue set id = ?, nimi = ?, kuvaus = ? where id = ?", null, array($this->id, $this->name, $this->description, $old_id));
     }
     
     /**

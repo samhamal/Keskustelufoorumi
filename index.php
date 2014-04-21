@@ -15,7 +15,7 @@
         // käyttäjä kirjautunut joskus aikasemmin. hae viimesimmät lukemattomat viestit ja näytä listaus
         $user = $_SESSION["current_user"];
         $topics = Message::get_latest_topics(5);
-        $unread = Message::get_unread_posts($user->get_id());
+        $unread = Message::get_unread_topics($user->get_id());
         $forums = Forum::get_all();
         
         $forumarray = array();
@@ -34,7 +34,13 @@
             // oikeat tunnukset annettu, näytetään listaus viimeisimmistä viesteistä
             $_SESSION["current_user"] = $user;
             $topics = Message::get_latest_topics(5);
-            $unread = Message::get_unread_posts($user->get_id());
+            $unread = Message::get_unread_topics($user->get_id());
+            $forums = Forum::get_all();
+
+            $forumarray = array();
+            foreach($forums as $forum) {
+                $forumarray[$forum->get_id()] = $forum->get_name();
+            }
             view("index-listing", array("topics" => $topics, "unread" => $unread, "forums" => $forumarray));
         } else {
             // väärät tunnukset annettu

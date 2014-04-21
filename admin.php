@@ -30,7 +30,7 @@
                     $id = filter_input(INPUT_POST, "forum_id", FILTER_SANITIZE_NUMBER_INT);
                     $description = filter_input(INPUT_POST, "forum_desc", FILTER_SANITIZE_STRING);
                     $forum = Forum::create($id, $title, $description);
-                    $forum->update();
+                    $forum->update(parse_id("edit"));
                     $forums = Forum::get_all();
                     view("admin", array("forums" => $forums));
                 } else {

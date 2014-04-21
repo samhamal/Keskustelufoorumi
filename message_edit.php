@@ -52,6 +52,8 @@
             $target->set_body($message);
             $target->save();
             header("Location: viewtopic.php?id=" . parse_id("topic"));
+        } else {
+            header("Location: viewtopic.php?id=" . parse_id("topic"));
         }
         exit();
     }

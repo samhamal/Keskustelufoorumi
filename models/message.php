@@ -160,11 +160,11 @@ class Message {
     }
     
     /**
-     * TODO: Hae kaikki viestit joita tietty käyttäjä ei ole vielä lukenut
+     * TODO: Hae kaikki viestiketjut joita tietty käyttäjä ei ole vielä lukenut
      * @param int $user käyttäjän id
      */
-    public static function get_unread_posts($user_id) {
-        $sql = "select * from viesti where viesti.id not in (select viesti.id from viesti, luettuviesti where luettuviesti.viesti = viesti.id and luettuviesti.käyttäjä = ?)";
+    public static function get_unread_topics($user_id) {
+        $sql = "select * from viesti where viesti.liitos_id is null and viesti.id not in (select viesti.id from viesti, luettuviesti where luettuviesti.viesti = viesti.id and luettuviesti.käyttäjä = ?)";
         $result = sql_query($sql, "all", array($user_id));
         $unreadMessages = array();
         

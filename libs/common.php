@@ -11,6 +11,19 @@
     }
     
     /**
+     * Kirjaa luettu viestiketju tietokantaan
+     * @param int $user_id käyttäjän id
+     * @param int $topic_id luetun viestiketjun id
+     */
+    function add_read($user_id, $topic_id) {
+        try {
+            sql_query("insert into luettuviesti (viesti, käyttäjä) values (?, ?)", null, array($user_id, $topic_id));
+        } catch(PDOException $e) {
+            // luultavasti epäonnistu uniikin (viesti, käyttäjä) parin takia
+        }
+    }
+    
+    /**
      * Hakee $_GET taulukosta annetun arvon
      * @param string $param haettava numeroarvo
      * @return int arvo
