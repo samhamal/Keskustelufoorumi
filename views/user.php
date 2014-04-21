@@ -38,7 +38,7 @@
         <h4 class="list-group-heading"><a href="user.php?id=<?php echo $data->target_user->get_id(); ?>" class="navbar-link">Käyttäjän viestiketjut</a> &#0187; <a href="user.php?id=<?php echo $data->target_user->get_id(); ?>" class="navbar-link"><?php echo $data->target_user->get_username(); ?></a></h4>
         <?php foreach($data->messages as $topic): ?>
         <?php if(!$topic->is_hidden() && $topic->get_parent() == null && $topic->get_title() != null): ?>
-        <a href="viewtopic.php?id=<?php echo $topic->get_id(); ?>" class="list-group-item"><span class="badge">TODO</span>
+        <a href="viewtopic.php?id=<?php echo $topic->get_id(); ?>" class="list-group-item">
             <h4 class="list-group-item-heading"><?php echo $data->forums[$topic->get_forum()]; ?> &#0187; <?php echo $topic->get_title(); ?></h4>
             <p class="list-group-item-text"><?php echo $topic->get_sent(); ?> - - <?php echo $topic->get_owner()->get_username(); ?></p>
         </a>
@@ -52,7 +52,7 @@
         <h4 class="list-group-heading"><a href="user.php?id=<?php echo $data->target_user->get_id(); ?>" class="navbar-link">Käyttäjän viestit</a> &#0187; <a href="user.php?id=<?php echo $data->target_user->get_id(); ?>" class="navbar-link"><?php echo $data->target_user->get_username(); ?></a></h4>
         <?php foreach($data->messages as $topic): ?>
         <?php if(!$topic->is_hidden() && $topic->get_parent() != null && $topic->get_title() == null): ?>
-        <a href="viewtopic.php?id=<?php echo $topic->get_id(); ?>" class="list-group-item"><span class="badge">TODO</span>
+        <a href="viewtopic.php?id=<?php echo $topic->get_id(); ?>" class="list-group-item">
             <h4 class="list-group-item-heading"><?php echo $data->forums[$topic->get_forum()]; ?> &#0187; <?php echo $topic->get_body(); ?></h4>
             <p class="list-group-item-text"><?php echo $topic->get_sent(); ?> - - <?php echo $topic->get_owner()->get_username(); ?></p>
         </a>

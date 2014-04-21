@@ -3,6 +3,9 @@
 require_once "libs/common.php";
 require_once "libs/dbconn.php";
 
+/**
+ * Aihealueen tiedot sisältävä luokka
+ */
 class Forum {
     private $id;
     private $name;
@@ -75,10 +78,7 @@ class Forum {
      * @return array oliotaulukko
      */
     public static function get_all() {
-        $sql = "select * from aihealue order by id";
-        $query = get_db_connection()->prepare($sql);
-        $query->execute();
-        $result = $query->fetchAll();
+        $result = sql_query("select * from aihealue order by id", "all");
         $forums = array();
         
         foreach($result as $forum_data) {
@@ -93,10 +93,7 @@ class Forum {
      * @return palauttaa Forum olion jos haku onnistuu, null jos ei
      */
     public static function get_by_id($id) {
-        $sql = "select * from aihealue where id = ? limit 1";
-        $query = get_db_connection()->prepare($sql);
-        $query->execute(array($id));
-        $result = $query->fetchObject();
+        $result = sql_query("select * from aihealue where id = ? limit 1", "one", array($id));
         
         if ($result == null) {
             return null;
@@ -121,7 +118,7 @@ class Forum {
         foreach($topics as $topic) {
             $replies = Message::get_messages_by_topic($topic->get_id());
             foreach($replies as $reply) {
-                $reply->remove();
+                $reply->remove(true);
             }
         }
         Forum::delete_by_id($this->id);

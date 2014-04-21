@@ -4,7 +4,7 @@
         <textarea name="message" style="width: 500px; height: 200px;" type="text" required><?php echo $data->target->get_body(); ?></textarea><br />
         <button class="btn btn-lg" style="float:right !important;" type="submit">Tallenna</button>
     </form>
-    <form style="margin: 15px;  margin-top: 0px; float: left;" action="admin.php?edit=<?php echo $data->target->get_id(); ?>&remove=1" method="post">
+    <form style="margin: 15px;  margin-top: 0px; float: left;" action="message_edit.php?topic=<?php echo $data->topic->get_id(); ?>&amp;edit=<?php echo $data->target->get_id(); ?>&amp;remove=1" method="post">
         <button class="btn btn-lg " style="float:right !important;" type="submit">Poista viesti</button>
     </form>
 </div>

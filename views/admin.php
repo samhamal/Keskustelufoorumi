@@ -28,7 +28,7 @@
                 </div>
                 <button class="btn btn-lg " style="float:right !important;" type="submit">Lähetä</button>
             </form>
-            <form style="margin: 15px;  margin-top: 0px; float: left;" action="admin.php?edit=<?php echo $data->target->get_id(); ?>&remove=1" method="post">
+            <form style="margin: 15px;  margin-top: 0px; float: left;" action="admin.php?edit=<?php echo $data->target->get_id(); ?>&amp;remove=1" method="post">
                 <button class="btn btn-lg " style="float:right !important;" type="submit">Poista alue</button>
             </form>
     </div>

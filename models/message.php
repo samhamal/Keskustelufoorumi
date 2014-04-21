@@ -2,10 +2,9 @@
 
 require_once "libs/common.php";
 require_once "libs/dbconn.php";
-require_once "models/user.php";
 
 /**
- * Viestin sisältävä luokka
+ * Viestin tiedot sisältävä luokka
  */
 class Message {
     private $id;
@@ -78,14 +77,20 @@ class Message {
     }
     
     /**
-     * Poista viesti
+     * Poistaa viestin jos sillä ei ole vastauksia, muuten piilottaa.
+     * @param boolean $force pakota tietokannasta poistaminen
      */
-    public function remove() {
-        $result = sql_query("select id from viesti where liitos_id = ?", "all", array($this->get_id()));
+    public function remove($force = false) {
+        if($force == false) {
+            $result = sql_query("select id from viesti where liitos_id = ?", "all", array($this->get_id()));
+            
+            if(!empty($result)) {
+                $this->hide();
+                return;
+            }
+        }
         
-        if($result) {
-            $this->hide();
-        } else {
+        delete: {
             sql_query("delete from viesti where id = ?", null, array($this->get_id()));
         }
     }
@@ -94,7 +99,7 @@ class Message {
      * Piilota viesti
      */
     public function hide() {
-        sql_query("update viesti set piilotettu = true where id = ?", null, array($this->id()));
+        sql_query("update viesti set piilotettu = true where id = ?", null, array($this->get_id()));
     }
     
     /**
@@ -158,11 +163,15 @@ class Message {
      * TODO: Hae kaikki viestit joita tietty käyttäjä ei ole vielä lukenut
      * @param int $user käyttäjän id
      */
-    public static function get_topics_with_unread_posts($user_id) {
-        $sql = "select * from luettuviesti where käyttäjä = ?";
-        $query = get_db_connection()->prepare($sql);
-        $query->execute();
-        $readMessages = $query->fetchAll();
+    public static function get_unread_posts($user_id) {
+        $sql = "select * from viesti where viesti.id not in (select viesti.id from viesti, luettuviesti where luettuviesti.viesti = viesti.id and luettuviesti.käyttäjä = ?)";
+        $result = sql_query($sql, "all", array($user_id));
+        $unreadMessages = array();
+        
+        foreach($result as $message_data) {
+            $unreadMessages[] = new Message((object)$message_data);
+        }
+        return $unreadMessages;
     }
     
     /**
