@@ -1,8 +1,8 @@
 <?php
     /**
      * Näyttää sivun ja syöttää sille arvoja
-     * @param type $page näytettävä sivu
-     * @param type $data sivulle syötettävä data
+     * @param string $page näytettävä sivu
+     * @param array $data sivulle syötettävä data
      */
     function view($page, $data = array()) {
         $data = (object)$data;
@@ -11,10 +11,23 @@
     }
     
     /**
+     * Hakee $_GET taulukosta annetun arvon
+     * @param string $param haettava numeroarvo
+     * @return int arvo
+     */
+    function parse_id($param) {
+        if (empty($_GET[$param])) {
+            return 0;
+        } else {
+            return filter_input(INPUT_GET, $param, FILTER_SANITIZE_NUMBER_INT);
+        }
+    }
+    
+    /**
      * Suorittaa tietokantakyselyn ja mahdollisesti palauttaa jotain arvoja.
-     * @param type $sql suoritettava SQL komento
-     * @param type $fetch "all" palauttaa kaikki sopivat rivit. "one" palauttaa yhden rivin. "column" palauttaa ensimmäisen sarakkeen. null syöte ei palauta mitään.
-     * @param type $params SQL komentoon syötettävät parametrit
+     * @param string $sql suoritettava SQL komento
+     * @param string $fetch "all" palauttaa kaikki sopivat rivit. "one" palauttaa yhden rivin. "column" palauttaa ensimmäisen sarakkeen. null syöte ei palauta mitään.
+     * @param array $params SQL komentoon syötettävät parametrit
      * @return null jos tietokantakysely menee pieleen, muuten $fetch mukaan.
      */
     function sql_query($sql, $fetch, $params = array()) {

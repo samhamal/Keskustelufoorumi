@@ -150,7 +150,7 @@ class User {
     }
     
     /**
-     * Poistaa käyttäjän syötetyn idn perusteella
+     * Poista käyttäjä idn perusteella
      * @param int $id poistettavan käyttäjän id
      */
     public static function delete_by_id($id) {
@@ -158,7 +158,7 @@ class User {
     }
     
     /*
-     * Poistaa käyttäjän
+     * Poista käyttäjä
      */
     public function delete() {
         User::delete_by_id($this->id);

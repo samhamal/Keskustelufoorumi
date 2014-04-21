@@ -5,21 +5,13 @@
     require "models/forum.php";
     session_start();
 
-    function get_by_id() {
-        if (empty($_GET["id"])) {
-            return User::find_by_id(0);
-        } else {
-            return User::find_by_id(filter_input(INPUT_GET, "id", FILTER_SANITIZE_NUMBER_INT));
-        }
-    }
-
     if (isset($_SESSION["current_user"]) && (filter_input(INPUT_GET, "id", FILTER_SANITIZE_NUMBER_INT) || empty($_GET["id"]) && isset($_GET["id"]))) {
         $current_user = $_SESSION["current_user"];
         if ($current_user->is_admin()) {
             
             // todo: käy läpi viestit ja tyhjennä niiden sisältö
             if (isset($_GET["remove"])) {
-                $target_user = get_by_id();
+                $target_user = User::find_by_id(parse_id("id"));
                 if($target_user->is_admin()) {
                     view("user", array("error", "Ylläpitäjiä ei voi poistaa.", "current_user" => $_SESSION["current_user"]));
                 } else {
@@ -29,14 +21,14 @@
             }
             
             if (isset($_POST["password"])) {
-                $target_user = get_by_id();
+                $target_user = User::find_by_id(parse_id("id"));
                 
                 $target_user->set_password(filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING));
                 $target_user->save();
             }
             
             if (isset($_POST["email"])) {
-                $target_user = get_by_id();
+                $target_user = User::find_by_id(parse_id("id"));
                 
                 if($target_user->get_email() != filter_input(INPUT_POST, "email", FILTER_SANITIZE_STRING)) {
                     $target_user->set_email(filter_input(INPUT_POST, "email", FILTER_SANITIZE_STRING));
@@ -45,7 +37,7 @@
             }
         }
         
-        $target_user = get_by_id();
+        $target_user = User::find_by_id(parse_id("id"));
         
         if($target_user != null) {
             // hae käyttäjän viestiketjut

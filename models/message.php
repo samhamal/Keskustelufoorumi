@@ -53,7 +53,7 @@ class Message {
      */
     public static function create($message_body, $parent, $forum, $owner_id, $title = null) {
         if($title == null) {
-            User::create_reply(array($message_body, $parent->get_id(), $owner_id, date("Y-m-d H:i:s"), $forum));
+            Message::create_reply(array($message_body, $parent->get_id(), $owner_id, date("Y-m-d H:i:s"), $forum));
         } else {
             $topic_info = array(
                      "id" => -1, 
@@ -62,6 +62,7 @@ class Message {
                      "liitos_id" => null, 
                      "lähettäjä" => $owner_id,
                      "lähetysaika" => date("Y-m-d H:i:s"),
+                     "piilotettu" => false,
                      "aihealue" => $forum);
         
             $topic = new Message((object)$topic_info);
@@ -103,7 +104,7 @@ class Message {
      */
     public static function get_by_user_id($id) {
         $messages = array();
-        sql_query("select * from viesti where lähettäjä = ? order by id", "all", array($id));
+        $result = sql_query("select * from viesti where lähettäjä = ? order by id", "all", array($id));
         
         foreach($result as $message_data) {
             $messages[] = new Message((object)$message_data);
@@ -186,7 +187,7 @@ class Message {
      * @return Palauttaa oliotaulukon viesteistä
      */
     public static function get_topics_by_forum_id($id) {
-        $result = sql_query("select * from viesti where liitos_id is null and aihealue = ? order by id", "all", array($id));
+        $result = sql_query("select * from viesti where liitos_id is null and aihealue = ? order by id desc", "all", array($id));
         $topics = array();
         
         foreach($result as $topic_data) {

@@ -6,14 +6,6 @@
     
     session_start();
     
-    function parse_id($param) {
-        if (empty($_GET[$param])) {
-            return 0;
-        } else {
-            return filter_input(INPUT_GET, $param, FILTER_SANITIZE_NUMBER_INT);
-        }
-    }
-
     if(isset($_SESSION["current_user"])) {
         if(isset($_GET["topic"]) && isset($_GET["parent"])) {
             $topic = Message::get_by_id(parse_id("topic"));
