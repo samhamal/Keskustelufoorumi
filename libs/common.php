@@ -17,7 +17,7 @@
      */
     function add_read($user_id, $topic_id) {
         try {
-            sql_query("insert into luettuviesti (viesti, käyttäjä) values (?, ?)", null, array($user_id, $topic_id));
+            sql_query("insert into luettuviesti (käyttäjä, viesti) values (?, ?)", null, array($user_id, $topic_id));
         } catch(PDOException $e) {
             // luultavasti epäonnistu uniikin (viesti, käyttäjä) parin takia
         }

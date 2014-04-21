@@ -12,6 +12,7 @@
     </div>
 </div>
 
+<?php if(!empty($data->unread)): ?>
 <div class="navbar navbar-default">
     <div class="list-group">
         <h4 class="list-group-heading">Lukemattomat viestiketjut</h4>
@@ -22,10 +23,10 @@
             <p class="list-group-item-text"><?php echo $unread->get_body(); ?></p>
         </a>
         <div class="list-group-item">
-            <p><?php echo $unread->get_sent();?> - - <a href="user.html?id=350" class="navbar-link"><?php echo $unread->get_owner()->get_username(); ?></a></p>
+            <p><?php echo $unread->get_sent();?> - - <a href="user.php?id=<?php echo $unread->get_owner()->get_id(); ?>" class="navbar-link"><?php echo $unread->get_owner()->get_username(); ?></a></p>
         </div>
         <?php endif; ?>
         <?php endforeach; ?>
     </div>
 </div>
-
+<?php endif;
