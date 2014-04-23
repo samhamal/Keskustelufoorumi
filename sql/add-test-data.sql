@@ -8,7 +8,7 @@ insert into Viesti(id, sisältö, otsikko, lähetysaika, piilotettu, liitos_id, 
 
 insert into Viesti(id, sisältö, lähetysaika, piilotettu, liitos_id, aihealue, lähettäjä) VALUES(1, 'Lorem ipsum vastaus tms', current_timestamp, false, 0, 10, 0);
 
-insert into Viesti(id, sisältö, lähetysaika, piilotettu, liitos_id, aihealue, lähettäjä) VALUES(2, 'Lorem ipsumiin toinen vastaus', current_timestamp, false, 1, 10, 1);
+insert into Viesti(id, sisältö, lähetysaika, piilotettu, liitos_id, aihealue, lähettäjä) VALUES(2, 'Lorem ipsumiin toinen vastaus', current_timestamp, false, 0, 10, 1);
 
 insert into Viesti(id, sisältö, otsikko, lähetysaika, piilotettu, liitos_id, aihealue, lähettäjä) VALUES(3, 'Toisen topicin sisältö', 'toinen topic', current_timestamp, false, null, 10, 0);
 insert into LuettuViesti(viesti, käyttäjä) VALUES(0, 0);

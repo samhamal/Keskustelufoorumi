@@ -34,7 +34,7 @@ class Message {
     }
     
     /**
-     * Syöttää vastauksen tietokantaan
+     * Syöttä vastaus tietokantaan
      * @param array $params
      */
     public static function create_reply($params) {
@@ -103,19 +103,14 @@ class Message {
     }
     
     /**
-     * Hakee tietyn käyttäjän kaikki viestit idn perusteella
+     * Hae tietyn käyttäjän kaikki viestit idn perusteella
      * @param int $id käyttäjän id
      * @return palauttaa oliotaulukon käyttäjän lähettämistä viesteistä
      */
     public static function get_by_user_id($id) {
-        $messages = array();
         $result = sql_query("select * from viesti where lähettäjä = ? order by id", "all", array($id));
         
-        foreach($result as $message_data) {
-            $messages[] = new Message((object)$message_data);
-        }
-        
-        return $messages;
+        return Message::object_array_from_array($result);
     }
     
     /**
@@ -142,20 +137,9 @@ class Message {
      * @return Oliotaulukko viestiketjun viesteistä
      */
     public static function get_messages_by_topic($id) {
-        $messages = array();
         $result = sql_query("select * from hae_viestiketju(?, true) order by id", "all", array($id));
+        $messages = Message::object_array_from_array($result);
         
-        foreach($result as $message_data) {
-            $messages[] = new Message((object)$message_data);
-        }
-        
-        foreach($messages as $message) {
-            foreach($messages as $other_message) {
-                if($other_message->get_parent() == $message->get_id()) {
-                    $message->add_child($other_message);
-                }
-            }
-        }
         return $messages;       
     }
     
@@ -164,14 +148,9 @@ class Message {
      * @param int $user käyttäjän id
      */
     public static function get_unread_topics($user_id) {
-        $sql = "select * from viesti where viesti.liitos_id is null and viesti.id not in (select viesti.id from viesti, luettuviesti where luettuviesti.viesti = viesti.id and luettuviesti.käyttäjä = ?)";
+        $sql = "select * from viesti where viesti.piilotettu = false and viesti.liitos_id is null and viesti.id not in (select viesti.id from viesti, luettuviesti where luettuviesti.viesti = viesti.id and luettuviesti.käyttäjä = ?)";
         $result = sql_query($sql, "all", array($user_id));
-        $unreadMessages = array();
-        
-        foreach($result as $message_data) {
-            $unreadMessages[] = new Message((object)$message_data);
-        }
-        return $unreadMessages;
+        return Message::object_array_from_array($result);
     }
     
     /**
@@ -181,13 +160,7 @@ class Message {
      */
     public static function get_latest_topics($count) {
         $result = sql_query("select * from viesti where liitos_id is null order by id desc limit ?", "all", array($count));
-        $topics = array();
-        
-        foreach($result as $topic_data) {
-            $topics[] = new Message((object)$topic_data);
-        }
-        
-        return $topics;
+        return Message::object_array_from_array($result);
     }
     
     /**
@@ -197,12 +170,55 @@ class Message {
      */
     public static function get_topics_by_forum_id($id) {
         $result = sql_query("select * from viesti where liitos_id is null and aihealue = ? order by id desc", "all", array($id));
-        $topics = array();
+        return Message::object_array_from_array($result);
+    }
+    
+    /**
+     * Hae kaikki viestiketjut.
+     * @return Palauttaa oliotaulukon kaikista viestiketjujen aloituksista.
+     */
+    public static function get_all_topics() {
+        $result = sql_query("select * from viesti where liitos_id is null order by id desc", "all");
+        return Message::object_array_from_array($result);
+    }
+    
+    /**
+     * Luo oliotaulukko parametrina annetusta taulukosta
+     * @param array $array 
+     * @return array Message oliotaulukko
+     */
+    public static function object_array_from_array($array) {
+        $messages = array();
         
-        foreach($result as $topic_data) {
-            $topics[] = new Message((object)$topic_data);
+        foreach($array as $message_data) {
+            $messages[] = new Message((object)$message_data);
         }
-        return $topics;
+        return $messages;
+    }
+    
+    /**
+     * Hae kaikki käyttäjän viestiketjut
+     * @param string $sender_name käyttäjän nimi
+     * @return array Message oliotaulukko
+     */
+    public static function search_topic_by_sender($sender_name) {
+        $user = User::find_by_username($sender_name);
+        if($user != null) {
+            $result = sql_query("select * from viesti where liitos_id is null and lähettäjä = ? order by id desc", "all", array($user->get_id()));
+            return Message::object_array_from_array($result);
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * Hae viestiketjuja otsikon perusteella
+     * @param string $title viestiketjun otsikko
+     * @return array Message oliotaulukko
+     */
+    public static function search_topic_by_title($title) {
+        $result = sql_query("select * from viesti where liitos_id is null and otsikko = ? order by id desc", "all", array($title));
+        return Message::object_array_from_array($result);
     }
     
     /**
@@ -282,21 +298,6 @@ class Message {
      */
     public function get_sent() {
         return $this->sent;
-    }
-    
-    /*
-     * Lisää viestille vastaus
-     */
-    public function add_child($message) {
-        $this->children[] = $message->get_id();
-    }
-    
-    /**
-     * Hae viestiin lähetetyt vastaukset
-     * @return array viestien id taulukko
-     */
-    public function get_children() {
-        return $this->children;
     }
     
     /**

@@ -89,6 +89,19 @@ class Forum {
     }
     
     /**
+     * Hae kaikki aihealueet taulukkona aihealueiden nimien esitystä varten
+     * @return array taulukko jossa a[id] = tietyn aihealueen nimi
+     */
+    public static function get_all_as_array() {
+        $forums = Forum::get_all();
+        $forumarray = array();
+        foreach($forums as $forum) {
+            $forumarray[$forum->get_id()] = $forum->get_name();
+        }
+        return $forumarray;
+    }
+    
+    /**
      * Hae aihealue idn perusteella
      * @param int $id haettavan aihealueen id
      * @return palauttaa Forum olion jos haku onnistuu, null jos ei

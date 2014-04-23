@@ -16,13 +16,9 @@
         $user = $_SESSION["current_user"];
         $topics = Message::get_latest_topics(5);
         $unread = Message::get_unread_topics($user->get_id());
-        $forums = Forum::get_all();
+        $forums = Forum::get_all_as_array();
         
-        $forumarray = array();
-        foreach($forums as $forum) {
-            $forumarray[$forum->get_id()] = $forum->get_name();
-        }
-        view("index-listing", array("topics" => $topics, "unread" => $unread, "forums" => $forumarray));
+        view("index-listing", array("topics" => $topics, "unread" => $unread, "forums" => $forums));
     } else if (empty($_POST["username"]) || empty($_POST["password"])) {
         // käyttäjä ei ole kirjautunut äskettäin tai aikasemmin
         view("index-login");
@@ -35,13 +31,9 @@
             $_SESSION["current_user"] = $user;
             $topics = Message::get_latest_topics(5);
             $unread = Message::get_unread_topics($user->get_id());
-            $forums = Forum::get_all();
-
-            $forumarray = array();
-            foreach($forums as $forum) {
-                $forumarray[$forum->get_id()] = $forum->get_name();
-            }
-            view("index-listing", array("topics" => $topics, "unread" => $unread, "forums" => $forumarray));
+            $forums = Forum::get_all_as_array();
+            
+            view("index-listing", array("topics" => $topics, "unread" => $unread, "forums" => $forums));
         } else {
             // väärät tunnukset annettu
             view("index-login", array(

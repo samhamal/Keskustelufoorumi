@@ -42,14 +42,9 @@
         if($target_user != null) {
             // hae käyttäjän viestiketjut
             $messages = Message::get_by_user_id($target_user->get_id());
-            $forums = Forum::get_all();
-            $forumarray = array();
+            $forums = Forum::get_all_as_array();
             
-            foreach($forums as $forum) {
-                $forumarray[$forum->get_id()] = $forum->get_name();
-            }
-            
-            view("user", array("target_user" => $target_user, "current_user" => $_SESSION["current_user"], "messages" => $messages, "forums" => $forumarray));
+            view("user", array("target_user" => $target_user, "current_user" => $_SESSION["current_user"], "messages" => $messages, "forums" => $forums));
         } else {
             view("user", array("error" => "Käyttäjää ei löytynyt.", "current_user" => $_SESSION["current_user"]));
         }
@@ -58,14 +53,9 @@
     if (isset($_SESSION["current_user"]) && (!isset($_POST["email"]) || !isset($_POST["password"]))) {
         $user = $_SESSION["current_user"];
         $messages = Message::get_by_user_id($user->get_id());
-        $forums = Forum::get_all();
+        $forums = Forum::get_all_as_array();
         
-        $forumarray = array();
-        foreach($forums as $forum) {
-            $forumarray[$forum->get_id()] = $forum->get_name();
-        }
-        
-        view("user", array("current_user" => $_SESSION["current_user"], "messages" => $messages, "forums" => $forumarray));
+        view("user", array("current_user" => $_SESSION["current_user"], "messages" => $messages, "forums" => $forums));
     } else if (isset($_POST["email"]) || isset($_POST["password"])) {
         $error = null;
         if(isset($_POST["email"]) && filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL)) {
@@ -85,25 +75,15 @@
                 $current_user->save();
                 $_SESSION["current_user"] = $current_user;
                 $messages = Message::get_by_user_id($current_user->get_id());
-                $forums = Forum::get_all();
-
-                $forumarray = array();
-                foreach($forums as $forum) {
-                    $forumarray[$forum->get_id()] = $forum->get_name();
-                }
-                view("user", array("current_user" => $_SESSION["current_user"], "messages" => $messages, "forums" => $forumarray));
+                $forums = Forum::get_all_as_array();
+                view("user", array("current_user" => $_SESSION["current_user"], "messages" => $messages, "forums" => $forums));
             } else {
                 $error = "Salasanojen on oltava samat.";
             }
         }
         $messages = Message::get_by_user_id($current_user->get_id());
         $forums = Forum::get_all();
-        
-        $forumarray = array();
-        foreach($forums as $forum) {
-            $forumarray[$forum->get_id()] = $forum->get_name();
-        }        
-        view("user", array("error" => $error, "current_user" => $_SESSION["current_user"], "messages" => $messages, "forums" => $forumarray));
+        view("user", array("error" => $error, "current_user" => $_SESSION["current_user"], "messages" => $messages, "forums" => $forums));
     } else {
         header("Location: index.php");
     }

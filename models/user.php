@@ -40,15 +40,15 @@ class User {
      * @return true jos on, false jos ei
      */
     public function validate_email() {
-        return true;
+        return filter_var($this->email, FILTER_VALIDATE_EMAIL);
     }
     
     /**
-     * Varmistaa käyttäjänimen sopivuuden tietokantaan, joka tukee vain alle 20 merkkisiä nimiä.
+     * Varmistaa käyttäjänimen sopivuuden tietokantaan, joka tukee vain 20 merkkisiä nimiä.
      * @return true jos käy, false jos ei.
      */
     public function validate_username() {
-        return (strlen($this->username) < 20);
+        return (strlen($this->username) <= 20);
     }
     
     /**
@@ -158,10 +158,14 @@ class User {
     }
     
     /*
-     * Poista käyttäjä
+     * Poista käyttäjä ja piilota kaikki tämän lähettämät viestit
      */
     public function delete() {
         User::delete_by_id($this->id);
+        $messages = Message::search_topic_by_sender($this->get_username());
+        foreach($messages as $message) {
+            $message->remove();
+        }
     }
     
     /**

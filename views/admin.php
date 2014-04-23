@@ -38,13 +38,13 @@
             <form style="margin: 15px; margin-top: 0px; float: left;" action="admin.php?add" method="post">
                 <div class="input-group">
                 <span class="input-group-addon">Alueen nimi</span>
-                <input name="forum_title" class="form-control" required placeholder="Alueen nimi"><br /></div>
+                <input name="forum_title" class="form-control" required placeholder="Alueen nimi" <?php if(isset($data->title)){ echo 'value = "' .  $data->title . '"'; }?>><br /></div>
                 <div class="input-group">
                 <span class="input-group-addon">ID</span>
                 <input name="forum_id" class="form-control" required placeholder="ID"><br /></div>
                 <div class="input-group">
                 <span class="input-group-addon">Alueen kuvaus</span>
-                <textarea name="forum_desc" class="form-control" style="width: 500px; height: 200px;" required placeholder="Aihealueen kuvaus"></textarea><br />
+                <textarea name="forum_desc" class="form-control" style="width: 500px; height: 200px;" required placeholder="Aihealueen kuvaus"><?php if(isset($data->description)){ echo $data->description; }?></textarea><br />
                 </div>
                 <button class="btn btn-lg " style="float:right !important;" type="submit">Lähetä</button>
             </form>
